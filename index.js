@@ -40,7 +40,7 @@ io.on('connection', (socket) => {
         socket.name = name;
         socket.room = room;
 
-        axios.post('http://127.0.0.1/room/user/',{
+        axios.post('http://127.0.0.1/room/user/update',{
             type: 'connect',
             room_id: socket.room,
             user_id: socket.uid,
@@ -63,7 +63,7 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
 
-        axios.post('http://127.0.0.1/room/user',{
+        axios.post('http://127.0.0.1/room/user/update',{
             type: 'disconnect',
             room_id: socket.room,
             user_id: socket.uid,
