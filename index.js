@@ -5,11 +5,13 @@ const axios = require('axios');
 const bodyParser = require('body-parser');
 const secret = require('./secret.json');
 
+const base_url = 'http://127.0.0.1/api'
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
 
 app.get('/test', (req, res) => {
-    axios.post('http://127.0.0.1/test/',{
+    axios.post(base_url + '/test/',{
         message: 'test',
         x_key: secret["X_KEY"],
     }).then((result) => {
@@ -40,7 +42,7 @@ io.on('connection', (socket) => {
         socket.name = name;
         socket.room = room;
 
-        axios.post('http://127.0.0.1/room/user/update',{
+        axios.post(base_url + '/room/user/update',{
             type: 'connect',
             room_id: socket.room,
             user_id: socket.uid,
