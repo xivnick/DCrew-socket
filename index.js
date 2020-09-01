@@ -7,6 +7,8 @@ const secret = require('./secret.json');
 
 const base_url = 'http://127.0.0.1/api'
 
+let settings = {};
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
 
@@ -33,6 +35,13 @@ app.post('/game/update', (req, res) => {
     res.json();
 });
 
+app.post('/room/delete', (req, res) => {
+    const room = req.body.room;
+
+    settings[room] = {};
+    res.json();
+})
+
 io.on('connection', (socket) => {
     socket.emit('connection');
     console.log(`[conn] client connected: ${socket.id}`);
@@ -45,7 +54,7 @@ io.on('connection', (socket) => {
         socket.room = room || 0;
 
         if(room > 0){
-            axios.post(base_url + '/room/user/update',{
+            axios.post(base_url + '/room/user/update/',{
                 type: 'connect',
                 room_id: socket.room,
                 user_id: socket.uid,
@@ -60,11 +69,26 @@ io.on('connection', (socket) => {
         socket.join(socket.room)
         socket.broadcast.to(socket.room).emit('join', socket.name);
         console.log(`[join] user join : ${socket.name}(${socket.id}) to ${socket.room}`);
+
+        if(socket.room in settings){
+            for(name in settings[room]){
+                socket.emit('setting', name, settings[room][name]);
+            }
+        }
     });
 
     socket.on('chat', (msg) => {
         console.log(`[chat] ${socket.name} : ${msg}`);
         socket.broadcast.to(socket.room).emit('chat', socket.name, msg);
+    });
+
+    socket.on('setting', (setting) => {
+
+        if(!(socket.room in settings)) settings[socket.room] = {};
+        settings[socket.room][socket.name] = setting;
+
+        socket.broadcast.to(socket.room).emit('setting', socket.name, setting);
+        console.log(`[sett] changed setting on ${socket.room} by ${socket.name}`);
     });
 
     socket.on('disconnect', () => {
