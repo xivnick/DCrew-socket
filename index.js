@@ -94,7 +94,7 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
 
         if(socket.room > 0){
-            axios.post(base_url + '/room/user/update',{
+            axios.post(base_url + '/room/user/update/',{
                 type: 'disconnect',
                 room_id: socket.room,
                 user_id: socket.uid,
