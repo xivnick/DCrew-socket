@@ -35,21 +35,11 @@ app.post('/room/update', (req, res) => {
     res.json();
 });
 
-app.post('/socket/update', (req, res) => {
-
-    const socket_id = req.body.socket_id;
-    const target = req.body.target;
-
-    const socket = io.sockets.connected[socket_id]
-
-    socket.emit('update', target);
-    console.log(`[update] update on ${target} to ${socket.name}`);
-})
-
 app.post('/room/delete', (req, res) => {
     const room = req.body.room;
 
     settings[room] = {};
+    io.sockets.in(room).emit('update', 'reload');
     res.json();
 })
 
