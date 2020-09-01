@@ -35,6 +35,18 @@ app.post('/room/update', (req, res) => {
     res.json();
 });
 
+app.post('/rooms/update', (req, res) => {
+    const rooms = req.body.rooms;
+    const target = req.body.target;
+
+    for(room of rooms){
+        io.sockets.in(room).emit('update', target);
+    }
+    console.log(`[update] update on ${target} of ${rooms}`);
+
+    res.json();
+});
+
 app.post('/room/delete', (req, res) => {
     const room = req.body.room;
 
