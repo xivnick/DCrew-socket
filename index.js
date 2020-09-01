@@ -68,6 +68,7 @@ io.on('connection', (socket) => {
 
         socket.join(socket.room)
         socket.broadcast.to(socket.room).emit('join', socket.name);
+        socket.emit('update', 'all');
         console.log(`[join] user join : ${socket.name}(${socket.id}) to ${socket.room}`);
 
         if(socket.room in settings){
