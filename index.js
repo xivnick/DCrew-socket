@@ -51,7 +51,7 @@ app.post('/room/delete', (req, res) => {
     const room = req.body.room;
 
     settings[room] = {};
-    io.sockets.in(room).emit('update', 'reload');
+    io.sockets.in(room).emit('update', 'delete');
     io.sockets.in(0).emit('update', 'all');
     res.json();
 })
